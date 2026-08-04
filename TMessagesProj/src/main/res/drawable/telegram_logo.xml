@@ -6,43 +6,43 @@
 
     <!-- InfoGram text logo - "I" -->
     <path
-        android:fillColor="#FFFFFFFF"
+        android:fillColor="#FFFF6B35"
         android:fillType="nonZero"
         android:pathData="M0.42,0.76L31.98,0.76L31.98,8.31L20.18,8.31L20.18,43L12.22,43L12.22,8.31L0.42,8.31L0.42,0.76Z" />
 
     <!-- "n" -->
     <path
-        android:fillColor="#FFFFFFFF"
+        android:fillColor="#FFFF6B35"
         android:fillType="nonZero"
         android:pathData="M36.59,21.52L36.59,43L44.32,43L44.32,21.52L52.05,21.52L52.05,15.76L36.59,15.76L36.59,21.52ZM44.32,30.31C44.32,33.15 43.5,35.48 41.87,37.31C40.24,39.13 38.08,40.05 35.39,40.05L44.32,40.05L44.32,30.31Z" />
 
     <!-- "f" -->
     <path
-        android:fillColor="#FFFFFFFF"
+        android:fillColor="#FFFF6B35"
         android:fillType="nonZero"
         android:pathData="M56.59,0.76L72.05,0.76L72.05,7.07L64.32,7.07L64.32,43L56.59,43L56.59,7.07L52.05,7.07L52.05,0.76L56.59,0.76ZM60.45,12.83L68.18,12.83L68.18,7.07L60.45,7.07L60.45,12.83Z" />
 
     <!-- "o" -->
     <path
-        android:fillColor="#FFFFFFFF"
+        android:fillColor="#FFFF6B35"
         android:fillType="nonZero"
         android:pathData="M76.59,21.52L76.59,43L84.32,43L84.32,21.52L76.59,21.52ZM76.59,15.76L84.32,15.76L84.32,21.52L76.59,21.52L76.59,15.76Z" />
 
     <!-- "r" -->
     <path
-        android:fillColor="#FFFFFFFF"
+        android:fillColor="#FFFF6B35"
         android:fillType="nonZero"
         android:pathData="M88.59,15.76L88.59,43L96.32,43L96.32,27.27C96.32,24.44 97.14,22.11 98.77,20.28C100.4,18.46 102.56,17.54 105.25,17.54L96.32,17.54L96.32,15.76L105.25,15.76L109.79,15.76L109.79,17.54L105.25,17.54C102.56,17.54 100.4,18.46 98.77,20.28C97.14,22.11 96.32,24.44 96.32,27.27L96.32,43L88.59,43L88.59,15.76Z" />
 
     <!-- "a" -->
     <path
-        android:fillColor="#FFFFFFFF"
+        android:fillColor="#FFFF6B35"
         android:fillType="nonZero"
         android:pathData="M113.59,21.52L113.59,43L121.32,43L121.32,21.52L113.59,21.52ZM113.59,15.76L121.32,15.76L121.32,21.52L113.59,21.52L113.59,15.76Z" />
 
     <!-- "m" -->
     <path
-        android:fillColor="#FFFFFFFF"
+        android:fillColor="#FFFF6B35"
         android:fillType="nonZero"
         android:pathData="M125.59,15.76L125.59,43L133.32,43L133.32,27.27C133.32,24.44 134.14,22.11 135.77,20.28C137.4,18.46 139.56,17.54 142.25,17.54L133.32,17.54L133.32,15.76L142.25,15.76L146.79,15.76L146.79,17.54L142.25,17.54C139.56,17.54 137.4,18.46 135.77,20.28C134.14,22.11 133.32,24.44 133.32,27.27L133.32,43L125.59,43L125.59,15.76Z" />
 
