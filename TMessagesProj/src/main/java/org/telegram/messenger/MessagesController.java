@@ -9331,22 +9331,6 @@ public class MessagesController extends BaseController implements NotificationCe
         if ((messages == null || messages.isEmpty()) && taskId == 0) {
             return;
         }
-        if (messages != null && taskId == 0) {
-            try {
-                AntiDeleteController antiDelete = AntiDeleteController.getInstance(currentAccount);
-                if (antiDelete.isAntiDeleteEnabled()) {
-                    for (int i = 0, size = messages.size(); i < size; i++) {
-                        int msgId = messages.get(i);
-                        MessageObject obj = dialogMessagesByIds.get(msgId);
-                        if (obj != null) {
-                            antiDelete.saveDeletedMessage(obj);
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                FileLog.e(e);
-            }
-        }
         ArrayList<Integer> toSend = null;
         long channelId;
         if (taskId == 0) {
@@ -10528,51 +10512,45 @@ public class MessagesController extends BaseController implements NotificationCe
             if (!ignoreSetOnline && getConnectionsManager().getPauseTime() == 0 && ApplicationLoader.isScreenOn && !ApplicationLoader.mainInterfacePausedStageQueue) {
                 if (ApplicationLoader.mainInterfacePausedStageQueueTime != 0 && Math.abs(ApplicationLoader.mainInterfacePausedStageQueueTime - System.currentTimeMillis()) > 1000) {
                     if (statusSettingState != 1 && (lastStatusUpdateTime == 0 || Math.abs(System.currentTimeMillis() - lastStatusUpdateTime) >= 55000 || offlineSent)) {
-                        if (!GhostModeController.shouldSendOnlinePacket()) {
-                            lastStatusUpdateTime = System.currentTimeMillis();
-                        } else {
-                            statusSettingState = 1;
+                        statusSettingState = 1;
 
-                            if (statusRequest != 0) {
-                                getConnectionsManager().cancelRequest(statusRequest, true);
-                            }
-
-                            TL_account.updateStatus req = new TL_account.updateStatus();
-                            req.offline = false;
-                            statusRequest = getConnectionsManager().sendRequest(req, (response, error) -> {
-                                if (error == null) {
-                                    lastStatusUpdateTime = System.currentTimeMillis();
-                                    offlineSent = false;
-                                    statusSettingState = 0;
-                                } else {
-                                    if (lastStatusUpdateTime != 0) {
-                                        lastStatusUpdateTime += 5000;
-                                    }
-                                }
-                                statusRequest = 0;
-                            });
+                        if (statusRequest != 0) {
+                            getConnectionsManager().cancelRequest(statusRequest, true);
                         }
+
+                        TL_account.updateStatus req = new TL_account.updateStatus();
+                        req.offline = false;
+                        statusRequest = getConnectionsManager().sendRequest(req, (response, error) -> {
+                            if (error == null) {
+                                lastStatusUpdateTime = System.currentTimeMillis();
+                                offlineSent = false;
+                                statusSettingState = 0;
+                            } else {
+                                if (lastStatusUpdateTime != 0) {
+                                    lastStatusUpdateTime += 5000;
+                                }
+                            }
+                            statusRequest = 0;
+                        });
                     }
                 }
             } else if (statusSettingState != 2 && !offlineSent && Math.abs(System.currentTimeMillis() - getConnectionsManager().getPauseTime()) >= 2000) {
-                if (GhostModeController.shouldSendOnlinePacket()) {
-                    statusSettingState = 2;
-                    if (statusRequest != 0) {
-                        getConnectionsManager().cancelRequest(statusRequest, true);
-                    }
-                    TL_account.updateStatus req = new TL_account.updateStatus();
-                    req.offline = true;
-                    statusRequest = getConnectionsManager().sendRequest(req, (response, error) -> {
-                        if (error == null) {
-                            offlineSent = true;
-                        } else {
-                            if (lastStatusUpdateTime != 0) {
-                                lastStatusUpdateTime += 5000;
-                            }
-                        }
-                        statusRequest = 0;
-                    });
+                statusSettingState = 2;
+                if (statusRequest != 0) {
+                    getConnectionsManager().cancelRequest(statusRequest, true);
                 }
+                TL_account.updateStatus req = new TL_account.updateStatus();
+                req.offline = true;
+                statusRequest = getConnectionsManager().sendRequest(req, (response, error) -> {
+                    if (error == null) {
+                        offlineSent = true;
+                    } else {
+                        if (lastStatusUpdateTime != 0) {
+                            lastStatusUpdateTime += 5000;
+                        }
+                    }
+                    statusRequest = 0;
+                });
             }
 
             if (updatesQueueChannels.size() != 0) {
@@ -11391,9 +11369,6 @@ public class MessagesController extends BaseController implements NotificationCe
 
     public boolean sendTyping(long dialogId, long threadMsgId, int action, String emojicon, int classGuid) {
         if (action < 0 || action >= sendingTypings.length || dialogId == 0) {
-            return false;
-        }
-        if (!GhostModeController.shouldSendOnlinePacket()) {
             return false;
         }
         final long selfId = UserConfig.getInstance(UserConfig.selectedAccount).getClientUserId();
@@ -14523,9 +14498,6 @@ public class MessagesController extends BaseController implements NotificationCe
     }
 
     private void completeReadTask(ReadTask task) {
-        if (!GhostModeController.shouldSendReadPacket()) {
-            return;
-        }
         if (task.replyId != 0 && task.monoForumPeerId == 0) {
             TLRPC.TL_messages_readDiscussion req = new TLRPC.TL_messages_readDiscussion();
             req.msg_id = (int) task.replyId;
@@ -19460,32 +19432,6 @@ public class MessagesController extends BaseController implements NotificationCe
                 }
 
                 ImageLoader.saveMessageThumbs(message);
-
-                try {
-                    if (GhostModeController.isAntiEdit()) {
-                        long editDialogId = MessageObject.getDialogId(message);
-                        int editMsgId = message.id;
-                        TLRPC.Message oldMsg = getMessagesStorage().getMessage(editDialogId, editMsgId);
-                        if (oldMsg != null && oldMsg.message != null) {
-                            long senderId = 0;
-                            if (oldMsg.from_id != null && oldMsg.from_id.user_id != 0) {
-                                senderId = oldMsg.from_id.user_id;
-                            } else if (oldMsg.peer_id != null && oldMsg.peer_id.user_id != 0) {
-                                senderId = oldMsg.peer_id.user_id;
-                            }
-                            String senderName = "Unknown";
-                            if (senderId != 0) {
-                                TLRPC.User user = getUser(senderId);
-                                if (user != null) {
-                                    senderName = UserObject.getUserName(user);
-                                }
-                            }
-                            AntiEditController.getInstance(currentAccount).saveOriginalMessage(editDialogId, editMsgId, oldMsg.message, oldMsg.date, senderName);
-                        }
-                    }
-                } catch (Exception e) {
-                    FileLog.e(e);
-                }
 
                 AndroidUtilities.runOnUIThread(()-> getSendMessagesHelper().onMessageEdited(message));
 

@@ -64,7 +64,7 @@ public class FlagSecureReason {
             return;
         }
 
-        if (isSecuredNow(window) && !GhostModeController.isScreenshotBypassEnabled()) {
+        if (isSecuredNow(window)) {
             window.addFlags(WindowManager.LayoutParams.FLAG_SECURE);
             AndroidUtilities.logFlagSecure();
         } else {

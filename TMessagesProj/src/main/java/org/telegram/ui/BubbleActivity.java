@@ -28,7 +28,6 @@ import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
 import org.telegram.messenger.SharedConfig;
 import org.telegram.messenger.UserConfig;
-import org.telegram.messenger.GhostModeController;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.DrawerLayoutContainer;
 import org.telegram.ui.ActionBar.INavigationLayout;
@@ -67,7 +66,7 @@ public class BubbleActivity extends BasePermissionsActivity implements INavigati
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setTheme(R.style.Theme_TMessages);
         getWindow().setBackgroundDrawableResource(R.drawable.transparent);
-        if (!SharedConfig.passcodeHash.isEmpty() && !SharedConfig.allowScreenCapture && !GhostModeController.isScreenshotBypassEnabled()) {
+        if (!SharedConfig.passcodeHash.isEmpty() && !SharedConfig.allowScreenCapture) {
             try {
                 getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
                 AndroidUtilities.logFlagSecure();

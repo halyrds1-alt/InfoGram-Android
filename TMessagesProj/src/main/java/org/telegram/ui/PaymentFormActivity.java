@@ -111,7 +111,6 @@ import org.telegram.messenger.SharedConfig;
 import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.UserObject;
 import org.telegram.messenger.Utilities;
-import org.telegram.messenger.GhostModeController;
 import org.telegram.messenger.browser.Browser;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.RequestDelegate;
@@ -574,7 +573,7 @@ public class PaymentFormActivity extends BaseFragment implements NotificationCen
         AndroidUtilities.requestAdjustResize(getParentActivity(), classGuid);
         if (Build.VERSION.SDK_INT >= 23) {
             try {
-                if ((currentStep == STEP_PAYMENT_INFO || currentStep == STEP_SET_PASSWORD_EMAIL) && !paymentForm.invoice.test && !GhostModeController.isScreenshotBypassEnabled()) {
+                if ((currentStep == STEP_PAYMENT_INFO || currentStep == STEP_SET_PASSWORD_EMAIL) && !paymentForm.invoice.test) {
                     getParentActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
                     AndroidUtilities.logFlagSecure();
                 } else if (SharedConfig.passcodeHash.length() == 0 || SharedConfig.allowScreenCapture) {

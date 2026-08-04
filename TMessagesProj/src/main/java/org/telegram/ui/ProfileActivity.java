@@ -594,6 +594,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
     private final static int delete_group = 45;
     private final static int enable_no_forwards = 46;
     private final static int disable_no_forwards = 47;
+    private final static int kartoshka_gifts = 48;
 
     private Rect rect = new Rect();
 
@@ -2752,6 +2753,12 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     openDiscussion();
                 } else if (id == gift_premium) {
                     onGiftPermiumClicked();
+                } else if (id == kartoshka_gifts) {
+                    TLRPC.User user = userId != 0 ? getMessagesController().getUser(userId) : null;
+                    String username = user != null ? UserObject.getPublicUsername(user) : null;
+                    if (!TextUtils.isEmpty(username)) {
+                        presentFragment(new GiftsActivity(username));
+                    }
                 } else if (id == channel_stories) {
                     Bundle args = new Bundle();
                     args.putInt("type", MediaActivity.TYPE_ARCHIVED_CHANNEL_STORIES);
@@ -12153,6 +12160,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                         StarsController.getInstance(currentAccount).loadStarGifts();
                         otherItem.addSubItem(gift_premium, R.drawable.msg_gift_premium, LocaleController.getString(R.string.ProfileSendAGift));
                         giftAction = true;
+                        otherItem.addSubItem(kartoshka_gifts, R.drawable.msg_gift_premium, "Gifts History");
                     }
                     otherItem.addSubItem(start_secret_chat, R.drawable.msg_secret, LocaleController.getString(R.string.StartEncryptedChat));
                     otherItem.setSubItemShown(start_secret_chat, DialogObject.isEmpty(getMessagesController().isUserContactBlocked(userId)));

@@ -2222,7 +2222,7 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
                 }
 
                 final TLRPC.Message newMsg = new TLRPC.TL_message();
-                if (!forwardFromMyName && !AnonymousForwardController.isAnonymousForwardEnabled()) {
+                if (!forwardFromMyName) {
                     boolean forwardFromSaved = msgObj.getDialogId() == myId && msgObj.isFromUser() && msgObj.messageOwner.from_id.user_id == myId;
                     if (msgObj.isForwarded()) {
                         newMsg.fwd_from = new TLRPC.TL_messageFwdHeader();
@@ -6222,9 +6222,6 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
                     reqSend.id.add(fwdId);
                 } else {
                     reqSend.from_peer = new TLRPC.TL_inputPeerEmpty();
-                    if (AnonymousForwardController.isAnonymousForwardEnabled()) {
-                        reqSend.drop_author = true;
-                    }
                 }
                 reqSend.silent = newMsg.silent;
                 if (scheduleDate != 0) {

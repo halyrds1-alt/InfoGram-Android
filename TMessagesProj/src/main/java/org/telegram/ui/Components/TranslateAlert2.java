@@ -64,7 +64,6 @@ import org.telegram.messenger.SharedConfig;
 import org.telegram.messenger.TranslateController;
 import org.telegram.messenger.Utilities;
 import org.telegram.messenger.XiaomiUtilities;
-import org.telegram.messenger.GhostModeController;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.tgnet.tl.TL_iv;
@@ -1035,7 +1034,7 @@ public class TranslateAlert2 extends BottomSheet implements NotificationCenter.N
         if (textView != null) {
             textView.setTextIsSelectable(!noforwards);
         }
-        if (noforwards && !GhostModeController.isScreenshotBypassEnabled()) {
+        if (noforwards) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
             AndroidUtilities.logFlagSecure();
         } else {

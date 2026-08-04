@@ -169,7 +169,6 @@ import org.telegram.messenger.DialogObject;
 import org.telegram.messenger.DownloadController;
 import org.telegram.messenger.Emoji;
 import org.telegram.messenger.FileLoader;
-import org.telegram.messenger.GhostModeController;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.FileStreamLoadOperation;
 import org.telegram.messenger.ImageLoader;
@@ -17651,10 +17650,8 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                 messageObject != null && (MessagesController.getInstance(currentAccount).isPeerNoForwards(messageObject.getDialogId()) ||
                 (messageObject.messageOwner != null && messageObject.messageOwner.noforwards)) || messageObject != null && messageObject.hasRevealedExtendedMedia()
             ) {
-                if (!GhostModeController.isScreenshotBypassEnabled()) {
-                    windowLayoutParams.flags |= WindowManager.LayoutParams.FLAG_SECURE;
-                    AndroidUtilities.logFlagSecure();
-                }
+                windowLayoutParams.flags |= WindowManager.LayoutParams.FLAG_SECURE;
+                AndroidUtilities.logFlagSecure();
             } else {
                 windowLayoutParams.flags &=~ WindowManager.LayoutParams.FLAG_SECURE;
                 AndroidUtilities.logFlagSecure();
