@@ -1,9 +1,9 @@
 package org.telegram.ui;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
+import android.graphics.LinearGradient;
+import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.text.TextUtils;
@@ -19,6 +19,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.GlassEffectHelper;
 import org.telegram.messenger.KartoshkaController;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.R;
@@ -40,7 +41,7 @@ public class GiftsActivity extends BaseFragment {
     private TextView errorText;
     private TextView emptyText;
     private String initialUsername;
-    private int selectedFilter = 0; // 0 = NFT, 1 = Regular
+    private int selectedFilter = 0;
 
     public GiftsActivity() {}
 
@@ -50,27 +51,47 @@ public class GiftsActivity extends BaseFragment {
 
     @Override
     public View createView(Context context) {
-        actionBar.setBackButtonImage(R.drawable.ic_ab_back);
-        actionBar.setAllowOverlayTitle(true);
-        actionBar.setTitle("Gifts");
-        actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
-            @Override
-            public void onItemClick(int id) {
-                if (id == -1) finishFragment();
-            }
-        });
+        actionBar.setVisibility(View.GONE);
 
         contentView = new LinearLayout(context);
         contentView.setOrientation(LinearLayout.VERTICAL);
+        contentView.setBackgroundColor(0xFF0A0A14);
+        contentView.setPadding(AndroidUtilities.dp(16), AndroidUtilities.dp(50), AndroidUtilities.dp(16), AndroidUtilities.dp(16));
 
-        // Search bar
-        FrameLayout searchContainer = new FrameLayout(context);
-        searchContainer.setPadding(AndroidUtilities.dp(16), AndroidUtilities.dp(8), AndroidUtilities.dp(16), AndroidUtilities.dp(8));
+        TextView headerTitle = new TextView(context);
+        headerTitle.setText("Gifts History");
+        headerTitle.setTextSize(28);
+        headerTitle.setTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD));
+        headerTitle.setTextColor(Color.WHITE);
+        headerTitle.setPadding(AndroidUtilities.dp(4), 0, 0, AndroidUtilities.dp(4));
+        contentView.addView(headerTitle);
+
+        TextView headerSub = new TextView(context);
+        headerSub.setText("Track NFT and regular gifts via Kartoshka API");
+        headerSub.setTextSize(13);
+        headerSub.setTextColor(Color.argb(100, 255, 255, 255));
+        headerSub.setPadding(AndroidUtilities.dp(4), 0, 0, AndroidUtilities.dp(16));
+        contentView.addView(headerSub);
+
+        int radius = AndroidUtilities.dp(14);
+        GradientDrawable searchBg = new GradientDrawable();
+        searchBg.setShape(GradientDrawable.RECTANGLE);
+        searchBg.setCornerRadius(radius);
+        searchBg.setColor(Color.argb(160, 16, 16, 26));
+        searchBg.setStroke(AndroidUtilities.dp(1), Color.argb(20, 255, 255, 255));
+
+        FrameLayout searchWrap = new FrameLayout(context);
+        searchWrap.setBackground(searchBg);
+        searchWrap.setPadding(AndroidUtilities.dp(14), AndroidUtilities.dp(4), AndroidUtilities.dp(14), AndroidUtilities.dp(4));
+
         searchField = new EditText(context);
         searchField.setHint("@username");
-        searchField.setTextSize(16);
+        searchField.setTextSize(15);
         searchField.setSingleLine(true);
+        searchField.setTextColor(Color.WHITE);
+        searchField.setHintTextColor(Color.argb(100, 255, 255, 255));
         searchField.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
+        searchField.setBackgroundColor(Color.TRANSPARENT);
         searchField.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 doSearch();
@@ -78,49 +99,43 @@ public class GiftsActivity extends BaseFragment {
             }
             return false;
         });
-        searchContainer.addView(searchField, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 44));
-        contentView.addView(searchContainer);
+        searchWrap.addView(searchField, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 40));
+        contentView.addView(searchWrap, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
 
-        // Filter tabs (NFT / Regular)
         LinearLayout filterRow = new LinearLayout(context);
         filterRow.setOrientation(LinearLayout.HORIZONTAL);
         filterRow.setGravity(Gravity.CENTER);
-        filterRow.setPadding(AndroidUtilities.dp(16), 0, AndroidUtilities.dp(16), AndroidUtilities.dp(8));
+        filterRow.setPadding(0, AndroidUtilities.dp(14), 0, AndroidUtilities.dp(14));
 
         TextView nftTab = createTab("NFT", 0);
-        TextView regularTab = createTab("Обычные", 1);
+        TextView regularTab = createTab("Regular", 1);
         filterRow.addView(nftTab, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 1));
         filterRow.addView(regularTab, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 1));
         contentView.addView(filterRow);
 
-        // Progress
         progressBar = new ProgressBar(context);
         progressBar.setVisibility(View.GONE);
         contentView.addView(progressBar, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER));
 
-        // Error
         errorText = new TextView(context);
         errorText.setTextSize(14);
-        errorText.setTextColor(Color.RED);
+        errorText.setTextColor(0xFFFF6B6B);
         errorText.setGravity(Gravity.CENTER);
-        errorText.setPadding(AndroidUtilities.dp(16), AndroidUtilities.dp(16), AndroidUtilities.dp(16), AndroidUtilities.dp(16));
+        errorText.setPadding(AndroidUtilities.dp(16), AndroidUtilities.dp(40), AndroidUtilities.dp(16), AndroidUtilities.dp(16));
         errorText.setVisibility(View.GONE);
         contentView.addView(errorText, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
 
-        // Empty
         emptyText = new TextView(context);
-        emptyText.setTextSize(16);
-        emptyText.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteGrayText2));
+        emptyText.setTextSize(15);
+        emptyText.setTextColor(Color.argb(80, 255, 255, 255));
         emptyText.setGravity(Gravity.CENTER);
-        emptyText.setPadding(AndroidUtilities.dp(16), AndroidUtilities.dp(80), AndroidUtilities.dp(16), AndroidUtilities.dp(16));
-        emptyText.setText("Введите @username и нажмите поиск");
+        emptyText.setPadding(AndroidUtilities.dp(16), AndroidUtilities.dp(60), AndroidUtilities.dp(16), AndroidUtilities.dp(16));
+        emptyText.setText("Enter @username and tap search");
         contentView.addView(emptyText, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
 
-        // List
         scrollView = new ScrollView(context);
         listContainer = new LinearLayout(context);
         listContainer.setOrientation(LinearLayout.VERTICAL);
-        listContainer.setPadding(AndroidUtilities.dp(16), 0, AndroidUtilities.dp(16), AndroidUtilities.dp(16));
         scrollView.addView(listContainer, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
         scrollView.setVisibility(View.GONE);
         contentView.addView(scrollView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
@@ -139,29 +154,46 @@ public class GiftsActivity extends BaseFragment {
     private TextView createTab(String text, int index) {
         TextView tab = new TextView(getContext());
         tab.setText(text);
-        tab.setTextSize(14);
-        tab.setTypeface(Typeface.DEFAULT_BOLD);
-        tab.setPadding(AndroidUtilities.dp(20), AndroidUtilities.dp(8), AndroidUtilities.dp(20), AndroidUtilities.dp(8));
+        tab.setTextSize(13);
+        tab.setTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD));
+        tab.setTextColor(Color.WHITE);
+        tab.setPadding(AndroidUtilities.dp(24), AndroidUtilities.dp(10), AndroidUtilities.dp(24), AndroidUtilities.dp(10));
         tab.setGravity(Gravity.CENTER);
-        updateTabStyle(tab, index == selectedFilter);
+
+        GradientDrawable bg = new GradientDrawable();
+        bg.setCornerRadius(AndroidUtilities.dp(20));
+        if (index == selectedFilter) {
+            bg.setColor(0xFF6B35FF);
+        } else {
+            bg.setColor(Color.argb(40, 255, 255, 255));
+        }
+        bg.setStroke(AndroidUtilities.dp(1), Color.argb(index == selectedFilter ? 60 : 15, 107, 53, 255));
+        tab.setBackground(bg);
+
         tab.setOnClickListener(v -> {
             selectedFilter = index;
+            updateTabStyles();
             doSearch();
         });
         return tab;
     }
 
-    private void updateTabStyle(TextView tab, boolean selected) {
-        GradientDrawable bg = new GradientDrawable();
-        bg.setCornerRadius(AndroidUtilities.dp(20));
-        if (selected) {
-            bg.setColor(0xFF3D9E51);
-            tab.setTextColor(Color.WHITE);
-        } else {
-            bg.setColor(0xFF2B2B2B);
-            tab.setTextColor(0xFF8E8E93);
+    private void updateTabStyles() {
+        if (contentView == null) return;
+        ViewGroup filterRow = (ViewGroup) contentView.getChildAt(3);
+        if (filterRow == null) return;
+        for (int i = 0; i < filterRow.getChildCount(); i++) {
+            TextView tab = (TextView) filterRow.getChildAt(i);
+            GradientDrawable bg = new GradientDrawable();
+            bg.setCornerRadius(AndroidUtilities.dp(20));
+            if (i == selectedFilter) {
+                bg.setColor(0xFF6B35FF);
+            } else {
+                bg.setColor(Color.argb(40, 255, 255, 255));
+            }
+            bg.setStroke(AndroidUtilities.dp(1), Color.argb(i == selectedFilter ? 60 : 15, 107, 53, 255));
+            tab.setBackground(bg);
         }
-        tab.setBackground(bg);
     }
 
     private void doSearch() {
@@ -181,7 +213,7 @@ public class GiftsActivity extends BaseFragment {
                 return;
             }
             if (items.isEmpty()) {
-                emptyText.setText("Нет подарков для @" + username);
+                emptyText.setText("No gifts for @" + username);
                 emptyText.setVisibility(View.VISIBLE);
                 return;
             }
@@ -189,36 +221,36 @@ public class GiftsActivity extends BaseFragment {
             int count = 0;
             for (KartoshkaController.GiftItem item : items) {
                 boolean isNft = item.minted;
-                boolean showNft = selectedFilter == 0;
-                if (showNft && !isNft) continue;
-                if (!showNft && isNft) continue;
-
+                if (selectedFilter == 0 && !isNft) continue;
+                if (selectedFilter == 1 && isNft) continue;
                 count++;
-                View card = createGiftCard(item);
+                View card = createGiftCard(item, count);
                 listContainer.addView(card);
-                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) card.getLayoutParams();
-                lp.bottomMargin = AndroidUtilities.dp(8);
-                card.setLayoutParams(lp);
             }
             if (count == 0) {
-                emptyText.setText(selectedFilter == 0 ? "Нет NFT подарков" : "Нет обычных подарков");
+                emptyText.setText(selectedFilter == 0 ? "No NFT gifts" : "No regular gifts");
                 emptyText.setVisibility(View.VISIBLE);
             }
             scrollView.setVisibility(View.VISIBLE);
         });
     }
 
-    private View createGiftCard(KartoshkaController.GiftItem item) {
+    private View createGiftCard(KartoshkaController.GiftItem item, int index) {
         Context context = getContext();
         LinearLayout card = new LinearLayout(context);
         card.setOrientation(LinearLayout.HORIZONTAL);
-        card.setPadding(AndroidUtilities.dp(12), AndroidUtilities.dp(12), AndroidUtilities.dp(12), AndroidUtilities.dp(12));
+        card.setPadding(AndroidUtilities.dp(14), AndroidUtilities.dp(14), AndroidUtilities.dp(14), AndroidUtilities.dp(14));
+
+        int radius = AndroidUtilities.dp(16);
+        boolean isSent = "SENT".equals(item.direction);
         GradientDrawable cardBg = new GradientDrawable();
-        cardBg.setCornerRadius(AndroidUtilities.dp(12));
-        cardBg.setColor(0xFF1E1E2E);
+        cardBg.setShape(GradientDrawable.RECTANGLE);
+        cardBg.setCornerRadius(radius);
+        cardBg.setColor(Color.argb(180, 14, 14, 22));
+        cardBg.setStroke(AndroidUtilities.dp(1), Color.argb(isSent ? 30 : 40,
+                isSent ? 231 : 61, isSent ? 76 : 158, isSent ? 60 : 81));
         card.setBackground(cardBg);
 
-        // Gift icon circle
         FrameLayout iconFrame = new FrameLayout(context);
         TextView iconLetter = new TextView(context);
         String title = item.giftTitle != null ? item.giftTitle : "Gift";
@@ -245,55 +277,51 @@ public class GiftsActivity extends BaseFragment {
             nftBadge.setBackground(badgeBg);
             nftBadge.setPadding(AndroidUtilities.dp(4), AndroidUtilities.dp(2), AndroidUtilities.dp(4), AndroidUtilities.dp(2));
             nftBadge.setGravity(Gravity.CENTER);
-            FrameLayout.LayoutParams badgeLp = new FrameLayout.LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
+            FrameLayout.LayoutParams badgeLp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             badgeLp.gravity = Gravity.TOP | Gravity.END;
             iconFrame.addView(nftBadge, badgeLp);
         }
         card.addView(iconFrame, LayoutHelper.createLinear(56, 56));
 
-        // Info column
         LinearLayout info = new LinearLayout(context);
         info.setOrientation(LinearLayout.VERTICAL);
-        info.setPadding(AndroidUtilities.dp(12), 0, 0, 0);
+        info.setPadding(AndroidUtilities.dp(14), 0, 0, 0);
 
-        // Direction
         TextView directionView = new TextView(context);
-        boolean isSent = "SENT".equals(item.direction);
-        directionView.setText(isSent ? "ПОДАРОК ОТПРАВЛЕН" : "ПОДАРОК ПОЛУЧЕН");
-        directionView.setTextSize(11);
-        directionView.setTypeface(Typeface.DEFAULT_BOLD);
-        directionView.setTextColor(isSent ? 0xFFE74C3C : 0xFF3D9E51);
+        directionView.setText(isSent ? "SENT" : "RECEIVED");
+        directionView.setTextSize(10);
+        directionView.setTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD));
+        directionView.setTextColor(isSent ? 0xFFFF6B6B : 0xFF3D9E51);
+        directionView.setLetterSpacing(0.1f);
         info.addView(directionView);
 
-        // Title
         TextView titleView = new TextView(context);
         titleView.setText(title);
         titleView.setTextSize(16);
-        titleView.setTypeface(Typeface.DEFAULT_BOLD);
-        titleView.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
+        titleView.setTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD));
+        titleView.setTextColor(Color.WHITE);
+        titleView.setPadding(0, AndroidUtilities.dp(3), 0, 0);
         info.addView(titleView);
 
-        // From / To
         TextView fromToView = new TextView(context);
-        StringBuilder sb = new StringBuilder();
         String fromName = item.fromName != null ? item.fromName : (item.fromUsername != null ? "@" + item.fromUsername : "?");
         String toName = item.toName != null ? item.toName : (item.toUsername != null ? "@" + item.toUsername : "?");
-        sb.append("ОТ: ").append(fromName).append("\nКОМУ: ").append(toName);
-        fromToView.setText(sb.toString());
+        fromToView.setText("From: " + fromName + "\nTo: " + toName);
         fromToView.setTextSize(12);
-        fromToView.setTextColor(0xFF8E8E93);
+        fromToView.setTextColor(Color.argb(100, 255, 255, 255));
         fromToView.setLineSpacing(AndroidUtilities.dp(2), 1);
+        fromToView.setPadding(0, AndroidUtilities.dp(3), 0, 0);
         info.addView(fromToView);
 
-        // Date + badges row
         LinearLayout bottomRow = new LinearLayout(context);
         bottomRow.setOrientation(LinearLayout.HORIZONTAL);
         bottomRow.setGravity(Gravity.CENTER_VERTICAL);
+        bottomRow.setPadding(0, AndroidUtilities.dp(6), 0, 0);
 
         TextView dateView = new TextView(context);
         dateView.setText(formatDate(item.time));
         dateView.setTextSize(11);
-        dateView.setTextColor(0xFF6E6E73);
+        dateView.setTextColor(Color.argb(70, 255, 255, 255));
         bottomRow.addView(dateView);
 
         if (item.rarityPermille > 0) {
@@ -316,7 +344,7 @@ public class GiftsActivity extends BaseFragment {
             TextView monoView = new TextView(context);
             monoView.setText("Mono: " + item.monoScore);
             monoView.setTextSize(10);
-            monoView.setTextColor(0xFF8E8E93);
+            monoView.setTextColor(Color.argb(80, 255, 255, 255));
             bottomRow.addView(monoView);
             LinearLayout.LayoutParams mlp = (LinearLayout.LayoutParams) monoView.getLayoutParams();
             mlp.leftMargin = AndroidUtilities.dp(6);
@@ -324,6 +352,12 @@ public class GiftsActivity extends BaseFragment {
 
         info.addView(bottomRow);
         card.addView(info, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 1));
+
+        LinearLayout.LayoutParams cardLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        cardLp.bottomMargin = AndroidUtilities.dp(10);
+        card.setLayoutParams(cardLp);
+
+        GlassEffectHelper.animateCardIn(card, index * 50);
 
         return card;
     }
@@ -333,10 +367,10 @@ public class GiftsActivity extends BaseFragment {
         try {
             String datePart = isoTime.substring(0, 10);
             String timePart = isoTime.substring(11, 16);
-            String[] months = {"янв.", "февр.", "мар.", "апр.", "мая", "июн.", "июл.", "авг.", "сент.", "окт.", "ноя.", "дек."};
+            String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
             int month = Integer.parseInt(datePart.substring(5, 7)) - 1;
             int day = Integer.parseInt(datePart.substring(8, 10));
-            return day + " " + months[month] + ", " + timePart.substring(0, 5);
+            return day + " " + months[month] + ", " + timePart;
         } catch (Exception e) {
             return isoTime;
         }
@@ -351,5 +385,11 @@ public class GiftsActivity extends BaseFragment {
     @Override
     public void onFragmentDestroy() {
         super.onFragmentDestroy();
+    }
+
+    @Override
+    public boolean onBackPressed(boolean invoked) {
+        finishFragment();
+        return true;
     }
 }
