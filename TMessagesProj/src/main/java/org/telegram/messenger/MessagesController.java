@@ -9326,6 +9326,9 @@ public class MessagesController extends BaseController implements NotificationCe
     }
 
     public void deleteMessages(ArrayList<Integer> messages, ArrayList<Long> randoms, TLRPC.EncryptedChat encryptedChat, long dialogId, boolean forAll, int mode, boolean cacheOnly, long taskId, TLObject taskRequest, int topicId, boolean movedToScheduled, int movedToScheduledMessageId) {
+        if (AntiDeleteController.isEnabled()) {
+            return;
+        }
         final boolean scheduled = mode == ChatActivity.MODE_SCHEDULED;
         final boolean quickReplies = mode == ChatActivity.MODE_QUICK_REPLIES;
         if ((messages == null || messages.isEmpty()) && taskId == 0) {
@@ -18444,6 +18447,26 @@ public class MessagesController extends BaseController implements NotificationCe
                 if (newMessageCallback != null && newMessageCallback.onMessageReceived(message)) {
                     newMessageCallback = null;
                 }
+                if (AutoReplyController.isEnabled() && !message.out && message.peer_id != null) {
+                    final long replyDialogId;
+                    if (message.from_id != null && message.from_id.user_id != 0) {
+                        replyDialogId = message.from_id.user_id;
+                    } else {
+                        replyDialogId = MessageObject.getPeerId(message.peer_id);
+                    }
+                    if (replyDialogId != getUserConfig().getClientUserId() && replyDialogId > 0) {
+                        final long delayDialogId = replyDialogId;
+                        final String replyText = AutoReplyController.getReplyText();
+                        AndroidUtilities.runOnUIThread(() -> {
+                            try {
+                                SendMessagesHelper.SendMessageParams params = SendMessagesHelper.SendMessageParams.of(replyText, delayDialogId);
+                                getSendMessagesHelper().sendMessage(params);
+                            } catch (Exception e) {
+                                FileLog.e(e);
+                            }
+                        }, 2500);
+                    }
+                }
                 TLRPC.Chat chat = null;
                 long chatId = 0;
                 long userId = 0;
@@ -19354,6 +19377,9 @@ public class MessagesController extends BaseController implements NotificationCe
                 }
                 updatesOnMainThread.add(baseUpdate);
             } else if (baseUpdate instanceof TL_update.TL_updateEditChannelMessage || baseUpdate instanceof TL_update.TL_updateEditMessage) {
+                if (AntiEditController.isEnabled()) {
+                    continue;
+                }
                 TLRPC.Message message;
                 if (baseUpdate instanceof TL_update.TL_updateEditChannelMessage) {
                     message = ((TL_update.TL_updateEditChannelMessage) baseUpdate).message;

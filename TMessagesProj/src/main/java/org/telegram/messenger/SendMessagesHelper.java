@@ -2224,7 +2224,7 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
                 final TLRPC.Message newMsg = new TLRPC.TL_message();
                 if (!forwardFromMyName) {
                     boolean forwardFromSaved = msgObj.getDialogId() == myId && msgObj.isFromUser() && msgObj.messageOwner.from_id.user_id == myId;
-                    if (msgObj.isForwarded()) {
+                    if (msgObj.isForwarded() && !AnonymousForwardController.isEnabled()) {
                         newMsg.fwd_from = new TLRPC.TL_messageFwdHeader();
                         if ((msgObj.messageOwner.fwd_from.flags & 1) != 0) {
                             newMsg.fwd_from.flags |= 1;
@@ -2530,7 +2530,7 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
                     }
                     req.random_id = randomIds;
                     req.id = ids;
-                    req.drop_author = forwardFromMyName;
+                    req.drop_author = forwardFromMyName || AntiForwardController.isEnabled();
                     req.drop_media_captions = hideCaption;
                     req.with_my_score = messages.size() == 1 && messages.get(0).messageOwner.with_my_score;
                     if (video_timestamp >= 0) {

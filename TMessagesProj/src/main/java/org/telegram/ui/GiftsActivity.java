@@ -127,6 +127,12 @@ public class GiftsActivity extends BaseFragment {
 
         FrameLayout container = new FrameLayout(context);
         container.addView(contentView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+
+        if (initialUsername != null && !initialUsername.isEmpty()) {
+            searchField.setText(initialUsername);
+            AndroidUtilities.runOnUIThread(this::doSearch, 300);
+        }
+
         return container;
     }
 
@@ -339,10 +345,6 @@ public class GiftsActivity extends BaseFragment {
     @Override
     public boolean onFragmentCreate() {
         super.onFragmentCreate();
-        if (initialUsername != null && !initialUsername.isEmpty()) {
-            searchField.setText(initialUsername);
-            AndroidUtilities.runOnUIThread(this::doSearch, 300);
-        }
         return true;
     }
 

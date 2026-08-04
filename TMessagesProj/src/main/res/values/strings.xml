@@ -11163,6 +11163,17 @@
     <string name="FakeLastSeenInfo">Show a fake last seen time to others instead of your real online status.</string>
     <string name="AntiDelete">Anti-Delete</string>
     <string name="AntiDeleteInfo">Prevent other users from deleting messages they sent in your chats.</string>
+    <string name="AntiEdit">Anti-Edit</string>
+    <string name="AntiEditInfo">See original messages even after others edit them.</string>
+    <string name="AutoReply">Auto-Reply</string>
+    <string name="AutoReplyInfo">Automatically reply to incoming messages with a custom text.</string>
+    <string name="AntiForward">Anti-Forward</string>
+    <string name="AntiForwardInfo">Prevent others from forwarding your messages.</string>
+    <string name="AnonymousForwardInfo">Forward messages without revealing who forwarded them.</string>
+    <string name="InfoGramFeatures">InfoGram Features</string>
     <string name="InfoGramSettings">InfoGram Settings</string>
     <string name="InfoGramSettingsDesc">Customize InfoGram-specific features and privacy options.</string>
+    <string name="AutoReplyText">Reply text</string>
+    <string name="AutoReplyEnabled">Auto-reply is ON</string>
+    <string name="AutoReplyDisabled">Auto-reply is OFF</string>
 </resources>
