@@ -1049,7 +1049,9 @@ public class UniversalAdapter extends AdapterWithDiffUtils {
                         switchCell.hideCollapseArrow();
                     } else {
                         switchCell.setCollapseArrow(item.animatedText.toString(), item.collapsed, () -> {
-                            item.clickCallback.onClick(switchCell);
+                            if (item.clickCallback != null) {
+                                item.clickCallback.onClick(switchCell);
+                            }
                         });
                     }
                 }

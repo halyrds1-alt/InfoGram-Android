@@ -651,6 +651,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
     private int userInfoRow;
     private int channelInfoRow;
     private int usernameRow;
+    private int userIdDcRow;
     private int notificationsDividerRow;
     private int notificationsRow;
     private int bizHoursRow;
@@ -10489,6 +10490,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         locationRow = -1;
         channelInfoRow = -1;
         usernameRow = -1;
+        userIdDcRow = -1;
         settingsTimerRow = -1;
         settingsKeyRow = -1;
         notificationsDividerRow = -1;
@@ -10680,6 +10682,9 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 }
                 if (user != null && username != null) {
                     usernameRow = rowCount++;
+                }
+                if (user != null) {
+                    userIdDcRow = rowCount++;
                 }
                 if (userInfo != null) {
                     if (userInfo.birthday != null) {
@@ -13540,6 +13545,25 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                             usernames = new ArrayList<>();
                         }
                         detailCell.setTextAndValue(text, alsoUsernamesString(username, usernames, value), infoEndRowEmpty == -1 && (isTopic || bizHoursRow != -1 || bizLocationRow != -1) && birthdayRow < 0);
+                    } else if (position == userIdDcRow) {
+                        TLRPC.User user = getMessagesController().getUser(userId);
+                        if (user != null) {
+                            long meaningfulId = user.id;
+                            int dcId = user.photo != null ? user.photo.dc_id : 0;
+                            if (dcId == 0) {
+                                dcId = (int)((user.id >> 32) & 3) + 1;
+                            }
+                            String dcName;
+                            switch (dcId) {
+                                case 1: dcName = "DC1 (Miami, USA)"; break;
+                                case 2: dcName = "DC2 (Amsterdam, Netherlands)"; break;
+                                case 3: dcName = "DC3 (Miami, USA)"; break;
+                                case 4: dcName = "DC4 (Amsterdam, Netherlands)"; break;
+                                case 5: dcName = "DC5 (Singapore)"; break;
+                                default: dcName = "DC" + dcId; break;
+                            }
+                            detailCell.setTextAndValue("ID: " + meaningfulId, dcName, false);
+                        }
                     } else if (position == locationRow) {
                         if (chatInfo != null && chatInfo.location instanceof TLRPC.TL_channelLocation) {
                             TLRPC.TL_channelLocation location = (TLRPC.TL_channelLocation) chatInfo.location;
@@ -14278,7 +14302,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             if (position == infoHeaderRow || position == membersHeaderRow || position == settingsSectionRow2 ||
                     position == numberSectionRow || position == helpHeaderRow || position == debugHeaderRow || position == botPermissionsHeader) {
                 return VIEW_TYPE_HEADER;
-            } else if (position == phoneRow || position == locationRow || position == numberRow || position == birthdayRow) {
+            } else if (position == phoneRow || position == locationRow || position == numberRow || position == birthdayRow || position == userIdDcRow) {
                 return VIEW_TYPE_TEXT_DETAIL;
             } else if (position == usernameRow || position == setUsernameRow) {
                 return VIEW_TYPE_TEXT_DETAIL_MULTILINE;

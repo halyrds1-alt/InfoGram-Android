@@ -881,7 +881,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
                 break;
             }
             case 24:
-                presentFragment(new GhostModeActivity());
+                presentSettingFragment(new GhostModeActivity());
                 break;
         }
     }
