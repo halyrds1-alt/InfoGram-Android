@@ -11159,4 +11159,10 @@
     <string name="ArticleAIPrompt">Write a prompt...</string>
     <string name="ArticleAIGenerate">Generate</string>
     <string name="ArticleAIAddToPage">Add to Page</string>
+    <string name="FakeLastSeen">Fake Last Seen</string>
+    <string name="FakeLastSeenInfo">Show a fake last seen time to others instead of your real online status.</string>
+    <string name="AntiDelete">Anti-Delete</string>
+    <string name="AntiDeleteInfo">Prevent other users from deleting messages they sent in your chats.</string>
+    <string name="InfoGramSettings">InfoGram Settings</string>
+    <string name="InfoGramSettingsDesc">Customize InfoGram-specific features and privacy options.</string>
 </resources>

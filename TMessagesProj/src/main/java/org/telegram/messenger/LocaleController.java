@@ -3014,6 +3014,14 @@ public class LocaleController {
                 user.status.expires = user.status.by_me ? -1002 : -102;
             }
         }
+        if (FakeLastSeenController.shouldIntercept() && user != null && user.status != null
+                && user.id != UserConfig.getInstance(currentAccount).getClientUserId()
+                && FakeLastSeenController.getFakeTime() > 0) {
+            long fakeTimeSec = FakeLastSeenController.getFakeTime() / 1000;
+            if (user.status != null) {
+                user.status.expires = (int) fakeTimeSec;
+            }
+        }
         if (user != null && user.status != null && user.status.expires <= 0) {
             if (MessagesController.getInstance(currentAccount).onlinePrivacy.containsKey(user.id)) {
                 if (isOnline != null) {

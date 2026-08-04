@@ -69,6 +69,8 @@ import org.telegram.messenger.AuthTokensHelper;
 import org.telegram.messenger.BirthdayController;
 import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.ChatThemeController;
+import org.telegram.messenger.ChatFontSizeController;
+import org.telegram.messenger.ChatCustomThemeController;
 import org.telegram.messenger.Emoji;
 import org.telegram.messenger.FileLoader;
 import org.telegram.messenger.FileLog;
@@ -145,6 +147,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import me.vkryl.android.animator.BoolAnimator;
@@ -740,6 +743,13 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         items.add(SettingCell.Factory.of(23, IconBackgroundColors.PURPLE.top, IconBackgroundColors.PURPLE.bottom, R.drawable.settings_features, getString(R.string.TelegramFeatures)));
         items.add(SettingCell.Factory.of(19, IconBackgroundColors.GREEN.top, IconBackgroundColors.GREEN.bottom, R.drawable.settings_policy, getString(R.string.PrivacyPolicy)));
 
+        items.add(UItem.asShadow(null));
+        items.add(UItem.asHeader("InfoGram"));
+        items.add(SettingCell.Factory.of(24, 0xFF3390EC, 0xFF1565C0, R.drawable.settings_chat, "Per-Chat Font Size", "Set custom font size for individual chats"));
+        items.add(SettingCell.Factory.of(25, 0xFF7C4DFF, 0xFF512DA8, R.drawable.settings_chat, "Chat Themes", "Custom theme colors per chat"));
+
+        items.add(SettingCell.Factory.of(30, 0xFF64B5F6, 0xFF42A5F5, R.drawable.settings_premium, getString(R.string.InfoGramSettings), getString(R.string.InfoGramSettingsDesc)));
+
         if (BuildVars.LOGS_ENABLED || BuildVars.DEBUG_PRIVATE_VERSION) {
             items.add(UItem.asShadow(null));
             items.add(UItem.asHeader(getString(R.string.SettingsDebug)));
@@ -876,6 +886,18 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
                 } else {
                     Browser.openUrl(getContext(), LocaleController.getString(R.string.TelegramFeaturesUrl));
                 }
+                break;
+            }
+
+            case 30:
+                presentSettingFragment(new InfoGramSettingsActivity());
+                break;
+            case 24: {
+                showPerChatFontSizeDialog();
+                break;
+            }
+            case 25: {
+                showChatThemesDialog();
                 break;
             }
 
@@ -1113,6 +1135,72 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
                 return a.intValue == b.intValue;
             }
         }
+    }
+
+    private void showPerChatFontSizeDialog() {
+        Map<Long, Integer> allSizes = ChatFontSizeController.getInstance().getAllSizes();
+        if (allSizes.isEmpty()) {
+            try {
+                Toast.makeText(getParentActivity(), "No per-chat font sizes set yet.", Toast.LENGTH_LONG).show();
+            } catch (Exception e) {
+                FileLog.e(e);
+            }
+            return;
+        }
+        CharSequence[] items = new CharSequence[allSizes.size() + 1];
+        int idx = 0;
+        items[idx++] = "Clear All Per-Chat Sizes";
+        for (Map.Entry<Long, Integer> entry : allSizes.entrySet()) {
+            items[idx++] = "Chat " + entry.getKey() + ": " + entry.getValue() + "sp";
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity(), resourceProvider);
+        builder.setTitle("Per-Chat Font Sizes");
+        builder.setItems(items, (dialog, which) -> {
+            if (which == 0) {
+                for (Long dialogId : allSizes.keySet()) {
+                    ChatFontSizeController.getInstance().clearFontSize(dialogId);
+                }
+                try {
+                    Toast.makeText(getParentActivity(), "All per-chat font sizes cleared", Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    FileLog.e(e);
+                }
+            }
+        });
+        showDialog(builder.create());
+    }
+
+    private void showChatThemesDialog() {
+        Map<Long, int[]> allThemes = ChatCustomThemeController.getInstance().getAllThemes();
+        if (allThemes.isEmpty()) {
+            try {
+                Toast.makeText(getParentActivity(), "No custom chat themes set.", Toast.LENGTH_LONG).show();
+            } catch (Exception e) {
+                FileLog.e(e);
+            }
+            return;
+        }
+        CharSequence[] items = new CharSequence[allThemes.size() + 1];
+        int idx = 0;
+        items[idx++] = "Clear All Chat Themes";
+        for (Map.Entry<Long, int[]> entry : allThemes.entrySet()) {
+            items[idx++] = "Chat " + entry.getKey();
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity(), resourceProvider);
+        builder.setTitle("Chat Themes");
+        builder.setItems(items, (dialog, which) -> {
+            if (which == 0) {
+                for (Long dialogId : allThemes.keySet()) {
+                    ChatCustomThemeController.getInstance().clearTheme(dialogId);
+                }
+                try {
+                    Toast.makeText(getParentActivity(), "All chat themes cleared", Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    FileLog.e(e);
+                }
+            }
+        });
+        showDialog(builder.create());
     }
 
     @Override

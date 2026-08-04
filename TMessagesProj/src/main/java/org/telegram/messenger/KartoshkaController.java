@@ -76,7 +76,6 @@ public class KartoshkaController {
                     return;
                 }
 
-                // API returns: {"ok":true,"result":{"hasMore":true,"items":[...]}}
                 List<GiftItem> items = new ArrayList<>();
                 boolean hasMore = false;
                 try {
@@ -86,10 +85,15 @@ public class KartoshkaController {
                         hasMore = result.optBoolean("hasMore", false);
                         org.json.JSONArray arr = result.optJSONArray("items");
                         if (arr != null) {
-                            items = gson.fromJson(arr.toString(), new TypeToken<ArrayList<GiftItem>>() {}.getType());
+                            for (int i = 0; i < arr.length(); i++) {
+                                org.json.JSONObject itemObj = arr.getJSONObject(i);
+                                GiftItem item = parseGiftItem(itemObj);
+                                if (item != null) {
+                                    items.add(item);
+                                }
+                            }
                         }
                     } else {
-                        // fallback: maybe response is directly an array
                         items = gson.fromJson(body, new TypeToken<ArrayList<GiftItem>>() {}.getType());
                     }
                 } catch (Exception e) {
@@ -107,6 +111,69 @@ public class KartoshkaController {
         });
     }
 
+    private GiftItem parseGiftItem(org.json.JSONObject obj) {
+        try {
+            GiftItem item = new GiftItem();
+            item.id = obj.optString("id", "");
+            item.kind = obj.optString("kind", "");
+            item.time = obj.optString("time", "");
+
+            org.json.JSONObject giftAction = obj.optJSONObject("giftAction");
+            if (giftAction != null) {
+                item.direction = giftAction.optString("direction", "");
+                item.action = giftAction.optString("action", "");
+
+                org.json.JSONObject fromObj = giftAction.optJSONObject("from");
+                if (fromObj != null) {
+                    item.fromName = fromObj.optString("name", "");
+                    item.fromUsername = fromObj.optString("username", "");
+                }
+
+                org.json.JSONObject toObj = giftAction.optJSONObject("to");
+                if (toObj != null) {
+                    item.toName = toObj.optString("name", "");
+                    item.toUsername = toObj.optString("username", "");
+                }
+
+                org.json.JSONObject giftObj = giftAction.optJSONObject("gift");
+                if (giftObj != null) {
+                    item.giftTitle = giftObj.optString("title", "");
+                    item.giftSlug = giftObj.optString("slug", "");
+                    item.giftNum = giftObj.optInt("num", 0);
+                    item.minted = giftObj.optBoolean("minted", false);
+                    item.onSale = giftObj.optBoolean("onSale", false);
+                    item.availabilityIssued = giftObj.optInt("availabilityIssued", 0);
+                    item.availabilityTotal = giftObj.optInt("availabilityTotal", 0);
+                    item.monoScore = giftObj.optInt("monoScore", 0);
+
+                    org.json.JSONObject modelObj = giftObj.optJSONObject("model");
+                    if (modelObj != null) {
+                        item.modelName = modelObj.optString("name", "");
+                    }
+                    org.json.JSONObject backdropObj = giftObj.optJSONObject("backdrop");
+                    if (backdropObj != null) {
+                        item.backdropName = backdropObj.optString("name", "");
+                    }
+                    org.json.JSONObject patternObj = giftObj.optJSONObject("pattern");
+                    if (patternObj != null) {
+                        item.patternName = patternObj.optString("name", "");
+                    }
+                }
+
+                org.json.JSONObject profileChange = giftAction.optJSONObject("profileChange");
+                if (profileChange != null) {
+                    item.profileField = profileChange.optString("field", "");
+                    item.profileOldValue = profileChange.optString("oldValue", "");
+                    item.profileNewValue = profileChange.optString("newValue", "");
+                }
+            }
+            return item;
+        } catch (Exception e) {
+            FileLog.e(e);
+            return null;
+        }
+    }
+
     private void postError(Callback callback, String error) {
         AndroidUtilities.runOnUIThread(() -> callback.onResult(new ArrayList<>(), false, error));
     }
@@ -115,8 +182,13 @@ public class KartoshkaController {
         public String id;
         public String kind;
         public String time;
+        public String action;
+        public String direction;
         public String giftTitle;
         public String giftSlug;
+        public int giftNum;
+        public boolean minted;
+        public boolean onSale;
         public String modelName;
         public String backdropName;
         public String patternName;
@@ -128,6 +200,34 @@ public class KartoshkaController {
         public String fromUsername;
         public String toName;
         public String toUsername;
-        public String direction;
+        public String profileField;
+        public String profileOldValue;
+        public String profileNewValue;
+
+        public boolean isNFT() {
+            return minted && giftNum > 0;
+        }
+
+        public boolean isSent() {
+            return "SENT".equalsIgnoreCase(direction);
+        }
+
+        public boolean isReceived() {
+            return "RECEIVED".equalsIgnoreCase(direction);
+        }
+
+        public boolean isGiftKind() {
+            return "GIFT".equalsIgnoreCase(kind);
+        }
+
+        public boolean isProfileKind() {
+            return "PROFILE".equalsIgnoreCase(kind);
+        }
+
+        public String getDisplayTitle() {
+            if (giftTitle != null && !giftTitle.isEmpty()) return giftTitle;
+            if (giftSlug != null && !giftSlug.isEmpty()) return giftSlug;
+            return "Gift";
+        }
     }
 }

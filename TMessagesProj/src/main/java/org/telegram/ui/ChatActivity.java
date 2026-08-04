@@ -177,6 +177,7 @@ import org.telegram.messenger.NotificationsController;
 import org.telegram.messenger.R;
 import org.telegram.messenger.SecretChatHelper;
 import org.telegram.messenger.SendMessagesHelper;
+import org.telegram.messenger.ChatFontSizeController;
 import org.telegram.messenger.SharedConfig;
 import org.telegram.messenger.SvgHelper;
 import org.telegram.messenger.Timer;
@@ -836,6 +837,7 @@ public class ChatActivity extends BaseFragment implements
     private boolean scrollToTopUnReadOnResume;
     private long dialog_id;
     private Long dialog_id_Long;
+    private int savedGlobalFontSize = -1;
     private int lastLoadIndex = 1;
     private SparseArray<MessageObject>[] selectedMessagesIds = new SparseArray[]{new SparseArray<>(), new SparseArray<>()};
     private SparseArray<MessageObject>[] selectedMessagesCanCopyIds = new SparseArray[]{new SparseArray<>(), new SparseArray<>()};
@@ -3327,6 +3329,11 @@ public class ChatActivity extends BaseFragment implements
     @Override
     public void onFragmentDestroy() {
         super.onFragmentDestroy();
+        if (savedGlobalFontSize > 0 && savedGlobalFontSize != SharedConfig.fontSize) {
+            SharedConfig.fontSize = savedGlobalFontSize;
+            savedGlobalFontSize = -1;
+            Theme.createCommonMessageResources();
+        }
         if (messageMetricsView != null) {
             messageMetricsView.finish();
         }
@@ -3543,6 +3550,13 @@ public class ChatActivity extends BaseFragment implements
     @Override
     public View createView(Context context) {
         Timer t = Timer.create("ChatActivity.createView");
+
+        int perChatFontSize = ChatFontSizeController.getInstance().getFontSize(dialog_id);
+        if (perChatFontSize > 0 && perChatFontSize != SharedConfig.fontSize) {
+            savedGlobalFontSize = SharedConfig.fontSize;
+            SharedConfig.fontSize = perChatFontSize;
+            Theme.createCommonMessageResources();
+        }
 
         blurredBackgroundColorProvider = new BlurredBackgroundColorProviderThemed(themeDelegate, Theme.key_chat_messagePanelBackground) {
             @Override
