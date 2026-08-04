@@ -5,7 +5,19 @@
     android:height="320dp"
     android:viewportWidth="320"
     android:viewportHeight="320">
+    <!-- Background circle -->
     <path
-        android:pathData="M160,160m-100,0a100,100 0,1 1,200 0a100,100 0,1 1,-200 0"
+        android:pathData="M160,160m-120,0a120,120 0,1 1,240 0a120,120 0,1 1,-240 0"
         android:fillColor="#FF6B35"/>
+    <!-- Inner circle -->
+    <path
+        android:pathData="M160,160m-80,0a80,80 0,1 1,160 0a80,80 0,1 1,-160 0"
+        android:fillColor="#FF8C5A"/>
+    <!-- "IG" letters -->
+    <path
+        android:pathData="M135,120 L145,120 L145,125 L142,125 L142,200 L145,200 L145,205 L135,205 L135,200 L138,200 L138,125 L135,125 Z"
+        android:fillColor="#FFFFFF"/>
+    <path
+        android:pathData="M155,155 C155,145 160,140 168,140 C176,140 180,145 180,155 L180,175 C180,185 176,190 168,190 C160,190 155,185 155,175 Z M163,159 C163,155 165,153 168,153 C171,153 173,155 173,159 L173,163 C173,167 171,169 168,169 C165,169 163,167 163,163 Z M155,175 L180,175 L180,190 L168,190 L155,190 Z"
+        android:fillColor="#FFFFFF"/>
 </vector>
