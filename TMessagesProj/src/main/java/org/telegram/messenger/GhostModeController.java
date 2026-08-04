@@ -11,6 +11,8 @@ public class GhostModeController {
     private static final String KEY_HIDE_TYPING = "hideTypingStatus";
     private static final String KEY_ANTI_DELETE = "antiDelete";
     private static final String KEY_ANTI_EDIT = "antiEdit";
+    private static final String KEY_SCREENSHOT_BYPASS = "screenshotBypass";
+    private static final String KEY_ANONYMOUS_FORWARD = "anonymousForward";
 
     private static SharedPreferences getPrefs() {
         return ApplicationLoader.applicationContext.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
@@ -54,6 +56,22 @@ public class GhostModeController {
 
     public static void setAntiEdit(boolean enabled) {
         getPrefs().edit().putBoolean(KEY_ANTI_EDIT, enabled).apply();
+    }
+
+    public static boolean isScreenshotBypassEnabled() {
+        return getPrefs().getBoolean(KEY_SCREENSHOT_BYPASS, false);
+    }
+
+    public static void setScreenshotBypassEnabled(boolean enabled) {
+        getPrefs().edit().putBoolean(KEY_SCREENSHOT_BYPASS, enabled).apply();
+    }
+
+    public static boolean isAnonymousForwardEnabled() {
+        return getPrefs().getBoolean(KEY_ANONYMOUS_FORWARD, false);
+    }
+
+    public static void setAnonymousForwardEnabled(boolean enabled) {
+        getPrefs().edit().putBoolean(KEY_ANONYMOUS_FORWARD, enabled).apply();
     }
 
     /**

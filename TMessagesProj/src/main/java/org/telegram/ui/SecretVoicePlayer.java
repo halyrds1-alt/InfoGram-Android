@@ -57,6 +57,7 @@ import org.telegram.messenger.R;
 import org.telegram.messenger.SharedConfig;
 import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.UserObject;
+import org.telegram.messenger.GhostModeController;
 import org.telegram.messenger.Utilities;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.AlertDialog;
@@ -257,7 +258,7 @@ public class SecretVoicePlayer extends Dialog {
                 WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS |
                 WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION;
         }
-        if (!BuildVars.DEBUG_PRIVATE_VERSION) {
+        if (!BuildVars.DEBUG_PRIVATE_VERSION && !GhostModeController.isScreenshotBypassEnabled()) {
             params.flags |= WindowManager.LayoutParams.FLAG_SECURE;
             AndroidUtilities.logFlagSecure();
         }

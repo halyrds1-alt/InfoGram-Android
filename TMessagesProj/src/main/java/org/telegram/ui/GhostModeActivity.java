@@ -5,6 +5,8 @@ import android.view.View;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.GhostModeController;
+import org.telegram.messenger.AnonymousForwardController;
+import org.telegram.messenger.LocalPremiumController;
 import org.telegram.messenger.R;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.BaseFragment;
@@ -23,6 +25,9 @@ public class GhostModeActivity extends BaseFragment {
     private static final int HIDE_TYPING = 3;
     private static final int ANTI_DELETE = 4;
     private static final int ANTI_EDIT = 5;
+    private static final int SCREENSHOT_BYPASS = 6;
+    private static final int ANONYMOUS_FORWARD = 7;
+    private static final int LOCAL_PREMIUM = 8;
 
     @Override
     public View createView(Context context) {
@@ -77,6 +82,29 @@ public class GhostModeActivity extends BaseFragment {
                 "Keeps a history of edited messages so you can see the original version before edits.");
         antiEdit.checked = GhostModeController.isAntiEdit();
         items.add(antiEdit);
+
+        items.add(UItem.asShadow(null));
+
+        items.add(UItem.asHeader("Privacy Tweaks"));
+
+        UItem screenshotBypass = UItem.asExpandableSwitch(SCREENSHOT_BYPASS, "Screenshot Bypass",
+                "Allows screenshots even in secret chats, media viewers, and other protected screens.");
+        screenshotBypass.checked = GhostModeController.isScreenshotBypassEnabled();
+        items.add(screenshotBypass);
+
+        UItem anonForward = UItem.asExpandableSwitch(ANONYMOUS_FORWARD, "Anonymous Forward",
+                "Strips forward headers when forwarding messages so the original source is hidden.");
+        anonForward.checked = GhostModeController.isAnonymousForwardEnabled();
+        items.add(anonForward);
+
+        items.add(UItem.asShadow(null));
+
+        items.add(UItem.asHeader("Premium Bypass"));
+
+        UItem localPremium = UItem.asExpandableSwitch(LOCAL_PREMIUM, "Local Premium",
+                "Bypasses client-side premium restrictions like larger uploads, premium stickers, and more.");
+        localPremium.checked = LocalPremiumController.isLocalPremiumEnabled();
+        items.add(localPremium);
     }
 
     private void onClick(UItem item, View view, int position, float x, float y) {
@@ -104,6 +132,21 @@ public class GhostModeActivity extends BaseFragment {
             case ANTI_EDIT:
                 item.checked = !item.checked;
                 GhostModeController.setAntiEdit(item.checked);
+                listView.adapter.update(true);
+                break;
+            case SCREENSHOT_BYPASS:
+                item.checked = !item.checked;
+                GhostModeController.setScreenshotBypassEnabled(item.checked);
+                listView.adapter.update(true);
+                break;
+            case ANONYMOUS_FORWARD:
+                item.checked = !item.checked;
+                AnonymousForwardController.setAnonymousForwardEnabled(item.checked);
+                listView.adapter.update(true);
+                break;
+            case LOCAL_PREMIUM:
+                item.checked = !item.checked;
+                LocalPremiumController.setLocalPremiumEnabled(item.checked);
                 listView.adapter.update(true);
                 break;
         }

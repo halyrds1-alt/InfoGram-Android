@@ -19460,6 +19460,33 @@ public class MessagesController extends BaseController implements NotificationCe
                 }
 
                 ImageLoader.saveMessageThumbs(message);
+
+                try {
+                    if (GhostModeController.isAntiEdit()) {
+                        long editDialogId = MessageObject.getDialogId(message);
+                        int editMsgId = message.id;
+                        TLRPC.Message oldMsg = getMessagesStorage().getMessage(editDialogId, editMsgId);
+                        if (oldMsg != null && oldMsg.message != null) {
+                            long senderId = 0;
+                            if (oldMsg.from_id != null && oldMsg.from_id.user_id != 0) {
+                                senderId = oldMsg.from_id.user_id;
+                            } else if (oldMsg.peer_id != null && oldMsg.peer_id.user_id != 0) {
+                                senderId = oldMsg.peer_id.user_id;
+                            }
+                            String senderName = "Unknown";
+                            if (senderId != 0) {
+                                TLRPC.User user = getUser(senderId);
+                                if (user != null) {
+                                    senderName = UserObject.getUserName(user);
+                                }
+                            }
+                            AntiEditController.getInstance(currentAccount).saveOriginalMessage(editDialogId, editMsgId, oldMsg.message, oldMsg.date, senderName);
+                        }
+                    }
+                } catch (Exception e) {
+                    FileLog.e(e);
+                }
+
                 AndroidUtilities.runOnUIThread(()-> getSendMessagesHelper().onMessageEdited(message));
 
                 boolean isDialogCreated = createdDialogIds.contains(message.dialog_id);

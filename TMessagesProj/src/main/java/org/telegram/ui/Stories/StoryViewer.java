@@ -58,6 +58,7 @@ import org.telegram.messenger.BotWebViewVibrationEffect;
 import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.DialogObject;
 import org.telegram.messenger.FileLoader;
+import org.telegram.messenger.GhostModeController;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.FileStreamLoadOperation;
 import org.telegram.messenger.ImageReceiver;
@@ -2897,7 +2898,7 @@ public class StoryViewer implements NotificationCenter.NotificationCenterDelegat
             }
             if (ATTACH_TO_FRAGMENT) {
                 if (fragment.getParentActivity() != null) {
-                    if (allowScreenshots) {
+                    if (allowScreenshots || GhostModeController.isScreenshotBypassEnabled()) {
                         fragment.getParentActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
                         AndroidUtilities.logFlagSecure();
                     } else {
@@ -2906,7 +2907,7 @@ public class StoryViewer implements NotificationCenter.NotificationCenterDelegat
                     }
                 }
             } else {
-                if (allowScreenshots) {
+                if (allowScreenshots || GhostModeController.isScreenshotBypassEnabled()) {
                     windowLayoutParams.flags &= ~WindowManager.LayoutParams.FLAG_SECURE;
                     AndroidUtilities.logFlagSecure();
                 } else {
