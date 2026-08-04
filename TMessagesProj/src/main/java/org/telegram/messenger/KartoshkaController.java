@@ -76,30 +76,26 @@ public class KartoshkaController {
                     return;
                 }
 
-                Type listType = new TypeToken<ArrayList<GiftItem>>() {}.getType();
-                List<GiftItem> items = gson.fromJson(body, listType);
-                if (items == null) {
-                    items = new ArrayList<>();
-                }
-
+                // API returns: {"ok":true,"result":{"hasMore":true,"items":[...]}}
+                List<GiftItem> items = new ArrayList<>();
                 boolean hasMore = false;
                 try {
                     org.json.JSONObject json = new org.json.JSONObject(body);
-                    hasMore = json.optBoolean("hasMore", false);
-                } catch (Exception ignored) {
-                }
-
-                if (items.isEmpty()) {
-                    try {
-                        org.json.JSONObject json = new org.json.JSONObject(body);
-                        if (json.has("items")) {
-                            org.json.JSONArray arr = json.getJSONArray("items");
-                            items = gson.fromJson(arr.toString(), listType);
+                    org.json.JSONObject result = json.optJSONObject("result");
+                    if (result != null) {
+                        hasMore = result.optBoolean("hasMore", false);
+                        org.json.JSONArray arr = result.optJSONArray("items");
+                        if (arr != null) {
+                            items = gson.fromJson(arr.toString(), new TypeToken<ArrayList<GiftItem>>() {}.getType());
                         }
-                        hasMore = json.optBoolean("hasMore", false);
-                    } catch (Exception ignored) {
+                    } else {
+                        // fallback: maybe response is directly an array
+                        items = gson.fromJson(body, new TypeToken<ArrayList<GiftItem>>() {}.getType());
                     }
+                } catch (Exception e) {
+                    FileLog.e(e);
                 }
+                if (items == null) items = new ArrayList<>();
 
                 List<GiftItem> finalItems = items;
                 boolean finalHasMore = hasMore;
