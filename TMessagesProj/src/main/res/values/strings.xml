@@ -2031,7 +2031,7 @@
     <string name="EncryptionKey">Encryption Key</string>
     <string name="MessageLifetime">Self-Destruct Timer</string>
     <string name="ShortMessageLifetimeForever">Off</string>
-    <string name="EncryptionKeyDescription">This image and text were derived from the encryption key for this secret chat with **%1$s**.\n\nIf they look the same on **%2$s\'s** device, end-to-end encryption is guaranteed.\n\nLearn more at telegram.org</string>
+    <string name="EncryptionKeyDescription">This image and text were derived from the encryption key for this secret chat with **%1$s**.\n\nIf they look the same on **%2$s\'s** device, end-to-end encryption is guaranteed.\n\nLearn more at InfoGram</string>
     <string name="EncryptionKeyLink">https://telegram.org/faq#secret-chats</string>
     <string name="NumberUnknown">Unknown</string>
     <string name="PhoneHidden">Unknown</string>

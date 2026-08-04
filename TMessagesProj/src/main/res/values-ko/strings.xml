@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="AppName">InfoGram</string>
     <string name="AppNameBeta">InfoGram Beta</string>
@@ -446,13 +446,13 @@
     <string name="TelegramFeaturesUrl">https://t.me/TelegramTipsKo</string>
     <string name="AddAccount">계정 추가</string>
     <string name="SelectAccount">계정을 선택하세요</string>
-    <string name="TelegramFaqUrl">https://telegram.org/faq/ko</string>
+    <string name="TelegramFaqUrl">https://InfoGram.org/faq/ko</string>
     <string name="PrivacyPolicy">개인 정보 정책</string>
     <string name="TermsOfService">이용 약관</string>
     <string name="TermsOfServiceLogin">가입함으로써 귀하는 \n*이용 약관*에 동의하게 됩니다.</string>
-    <string name="PrivacyPolicyUrl">https://telegram.org/privacy</string>
-    <string name="TermsOfServiceUrl">https://telegram.org/tos</string>
-    <string name="WebAppDisclaimerUrl">https://telegram.org/tos/mini-apps</string>
+    <string name="PrivacyPolicyUrl">https://InfoGram.org/privacy</string>
+    <string name="TermsOfServiceUrl">https://InfoGram.org/tos</string>
+    <string name="WebAppDisclaimerUrl">https://InfoGram.org/tos/mini-apps</string>
     <string name="DeleteLocalizationTitle">언어 묶음 삭제</string>
     <string name="DeleteLocalizationText">정말 **%1$s** 언어 묶음을 삭제하시겠습니까?</string>
     <string name="IncorrectLocalization">언어 파일이 올바르지 않습니다</string>
@@ -714,9 +714,9 @@
     <string name="AuthAnotherClientScan">QR 코드 스캔</string>
     <string name="AuthAnotherClientNotFound">인증 토큰을 찾지 못했습니다</string>
     <string name="AuthAnotherClientOk">인증되었습니다</string>
-    <string name="AuthAnotherClientDownloadClientUrl">https://desktop.telegram.org/</string>
-    <string name="AuthAnotherWebClientUrl">https://web.telegram.org/</string>
-    <string name="AuthAnotherClientInfo1">컴퓨터에 텔레그램을 다운로드하세요\n*desktop.telegram.org*.</string>
+    <string name="AuthAnotherClientDownloadClientUrl">https://desktop.InfoGram.org/</string>
+    <string name="AuthAnotherWebClientUrl">https://web.InfoGram.org/</string>
+    <string name="AuthAnotherClientInfo1">컴퓨터에 텔레그램을 다운로드하세요\n*desktop.InfoGram.org*.</string>
     <string name="AuthAnotherClientInfo2">QR 코드를 받으려면 텔레그램 데스크탑을 실행하세요.</string>
     <string name="AuthAnotherClientInfo3">회원님의 계정을 연결하려면 QR 코드를 스캔하세요.</string>
     <string name="AuthAnotherClientUrl">이 코드는 누군가가 회원님의 텔레그램 계정에 로그인할 수 있도록 하는 데 사용될 수 있습니다.\n\n텔레그램 로그인을 인증하려면, 설정 &gt; 기기 &gt; QR 코드 스캔으로 이동하여 코드를 스캔해 주세요.</string>
@@ -759,7 +759,7 @@
     <string name="ChannelDescriptionChanged">채널 설명 업데이트됨.</string>
     <string name="CheckPhoneNumber">지금도 %1$s 번호를 사용하시나요?</string>
     <string name="CheckPhoneNumberInfo">언제든지 텔레그램에 로그인할 수 있도록 전화번호를 최신으로 유지하세요. **더 알아보기**</string>
-    <string name="CheckPhoneNumberLearnMoreUrl">https://telegram.org/faq#q-i-have-a-new-phone-number-what-do-i-do</string>
+    <string name="CheckPhoneNumberLearnMoreUrl">https://InfoGram.org/faq#q-i-have-a-new-phone-number-what-do-i-do</string>
     <string name="CheckPhoneNumberYes">네</string>
     <string name="CheckPhoneNumberNo">아니요</string>
     <!--passcode view-->
@@ -1079,7 +1079,7 @@
     <string name="PermissionNoCameraWithHint">**텔레그램**이 사진 및 동영상을 찍으려면 접근 권한이 필요합니다. 설정 &gt; 권한을 탭하고 **카메라**를 활성화 해주세요.</string>
     <string name="PermissionNoCameraMicVideo">**텔레그램**이 영상 메시지를 보내려면 카메라와 마이크 접근 권한이 필요합니다. 설정 &gt; 권한을 탭하고 **마이크**와 **카메라**를 활성화 해주세요.</string>
     <string name="PermissionNoLocation">회원님의 위치를 친구들과 공유하려면 텔레그램에게 위치 접근 권한이 필요합니다.</string>
-    <string name="PermissionNoLocationStory">Telegram needs access to your location so that you can add the weather widget to your stories.</string>
+    <string name="PermissionNoLocationStory">InfoGram needs access to your location so that you can add the weather widget to your stories.</string>
     <string name="PermissionNoLocationFriends">**텔레그램**이 친구들과 위치를 공유하려면 위치 접근 권한이 필요합니다. 설정 &gt; 권한을 탭하고 **위치**를 활성화 해주세요.</string>
     <string name="PermissionNoLocationNavigation">**텔레그램**이 길을 찾으려면 위치 접근 권한이 필요합니다. 설정 &gt; 권한을 탭하고 **위치**를 활성화 해주세요.</string>
     <string name="PermissionNoContactsSharing">**텔레그램**에서 연락처를 친구들에게 공유 하려면 연락처 접근 권한이 필요합니다. 설정 &gt; 권한을 탭하고 **연락처**를 활성화 해주세요.</string>

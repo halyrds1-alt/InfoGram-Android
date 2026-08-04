@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="AppName">InfoGram</string>
     <string name="AppNameBeta">InfoGram Beta</string>
@@ -410,16 +410,16 @@
     <string name="TelegramFAQ">الأسئلة الشائعة</string>
     <string name="TelegramFaq">الأسئلة الشائعة</string>
     <string name="TelegramFeatures">ميزات تيليجرام</string>
-    <string name="TelegramFeaturesUrl">https://t.me/TelegramTipsAR/128</string>
+    <string name="TelegramFeaturesUrl">https://t.me/TelegramTipsAR</string>
     <string name="AddAccount">إضافة حساب</string>
     <string name="SelectAccount">اختيار حساب</string>
-    <string name="TelegramFaqUrl">https://telegram.org/faq/ar</string>
+    <string name="TelegramFaqUrl">https://InfoGram.org/faq/ar</string>
     <string name="PrivacyPolicy">سياسة الخصوصية</string>
     <string name="TermsOfService">شروط الخدمة</string>
     <string name="TermsOfServiceLogin">تسجيلك يعني موافقتك\nعلى *شروط الخدمة*.</string>
-    <string name="PrivacyPolicyUrl">https://telegram.org/faq/ar#a10</string>
-    <string name="TermsOfServiceUrl">https://telegram.org/tos</string>
-    <string name="WebAppDisclaimerUrl">https://telegram.org/tos/mini-apps</string>
+    <string name="PrivacyPolicyUrl">https://InfoGram.org/faq/ar#a10</string>
+    <string name="TermsOfServiceUrl">https://InfoGram.org/tos</string>
+    <string name="WebAppDisclaimerUrl">https://InfoGram.org/tos/mini-apps</string>
     <string name="DeleteLocalizationTitle">حذف حزمة اللغة</string>
     <string name="DeleteLocalizationText">هل ترغب حقًا في حذف حزمة اللغة **%1$s**؟</string>
     <string name="IncorrectLocalization">ملف الترجمة غير صالح</string>
@@ -658,9 +658,9 @@
     <string name="AuthAnotherClientScan">مسح رمز QR</string>
     <string name="AuthAnotherClientNotFound">لم يتم العثور على رمز مصادقة</string>
     <string name="AuthAnotherClientOk">تمّت المصادقة بنجاح</string>
-    <string name="AuthAnotherClientDownloadClientUrl">https://desktop.telegram.org</string>
-    <string name="AuthAnotherWebClientUrl">https://web.telegram.org/</string>
-    <string name="AuthAnotherClientInfo1">قم بتنزيل تيليجرام على حاسوبك من *desktop.telegram.org*.</string>
+    <string name="AuthAnotherClientDownloadClientUrl">https://desktop.InfoGram.org</string>
+    <string name="AuthAnotherWebClientUrl">https://web.InfoGram.org/</string>
+    <string name="AuthAnotherClientInfo1">قم بتنزيل تيليجرام على حاسوبك من *desktop.InfoGram.org*.</string>
     <string name="AuthAnotherClientInfo2">يرجى فتح تيليجرام على سطح المكتب للحصول على رمز QR.</string>
     <string name="AuthAnotherClientInfo3">امسح رمز الـ QR لربط حسابك.</string>
     <string name="AuthAnotherClientUrl">يمكن استخدام هذا الرمز للسماح لشخص ما بتسجيل الدخول إلى حسابك في تيليجرام.\n\nلتأكيد عملية تسجيل الدخول؛ يرجى الذهاب إلى الإعدادات &gt; الأجهزة &gt; مسح QR وامسح الرمز.</string>
@@ -703,7 +703,7 @@
     <string name="ChannelDescriptionChanged">تم تحديث وصف القناة.</string>
     <string name="CheckPhoneNumber">هل لا يزال %1$s رقمك؟</string>
     <string name="CheckPhoneNumberInfo">يرجى إبقاء رقم هاتفك محدّثًا؛ لضمان قدرتك على تسجيل الدخول إلى تيليجرام. **معرفة المزيد**</string>
-    <string name="CheckPhoneNumberLearnMoreUrl">https://telegram.org/faq/ar#g2</string>
+    <string name="CheckPhoneNumberLearnMoreUrl">https://InfoGram.org/faq/ar#g2</string>
     <string name="CheckPhoneNumberYes">نعم</string>
     <string name="CheckPhoneNumberNo">لا</string>
     <!--permissions-->
